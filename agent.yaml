@@ -1,0 +1,21 @@
+spec_version: "0.1.0"
+name: "agentcore-samples"
+version: "1.0.0"
+description: "Amazon Bedrock AgentCore enterprise samples: secure serverless agent runtime, MCP gateway, persistent memory, and Cedar policy governance."
+author: "AWS Labs / AgentCore Contributors"
+license: "Apache-2.0"
+metadata:
+  domain: "Developer Tools / Enterprise AI Agent Runtime, Bedrock AgentCore & MCP Tool Gateway"
+  category: "Developer Tools"
+  framework: "Amazon Bedrock AgentCore / AWS SDK / Python / TypeScript"
+  language: "Python"
+skills:
+  - "bedrock-agent-runtime-orchestration"
+  - "mcp-gateway-tool-synthesis"
+  - "agent-episodic-memory-management"
+  - "cedar-policy-access-control"
+tools:
+  - "bedrock-agent-deployer"
+  - "mcp-gateway-adapter"
+  - "episodic-memory-indexer"
+  - "cedar-policy-validator"

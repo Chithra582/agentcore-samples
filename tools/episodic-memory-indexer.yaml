@@ -1,0 +1,20 @@
+name: episodic-memory-indexer
+description: Stores and semantically retrieves conversational memory checkpoints from DynamoDB and Bedrock Knowledge Bases.
+input_schema:
+  type: object
+  properties:
+    user_id:
+      type: string
+      description: Unique identifier of the user or tenant.
+    action:
+      type: string
+      description: Memory operation ('store', 'retrieve', 'clear').
+    query:
+      type: string
+      description: Natural language query to retrieve relevant episodic context.
+    content:
+      type: string
+      description: Episodic content or state to persist when action is 'store'.
+  required:
+    - user_id
+    - action

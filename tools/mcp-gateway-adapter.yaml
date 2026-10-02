@@ -1,0 +1,17 @@
+name: mcp-gateway-adapter
+description: Bridges agent tool invocations to external enterprise REST, GraphQL, or Lambda targets via MCP Gateway.
+input_schema:
+  type: object
+  properties:
+    tool_identifier:
+      type: string
+      description: Name of the registered MCP gateway tool.
+    parameters:
+      type: object
+      description: Invocation parameters matching the tool schema.
+    session_id:
+      type: string
+      description: Active agent session identifier for contextual routing.
+  required:
+    - tool_identifier
+    - parameters

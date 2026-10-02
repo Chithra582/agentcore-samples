@@ -1,0 +1,21 @@
+name: cedar-policy-validator
+description: Evaluates Cedar policy statements to authorize or deny agent tool invocations against protected cloud resources.
+input_schema:
+  type: object
+  properties:
+    principal:
+      type: string
+      description: Entity identifier of the caller or agent role (e.g., 'Agent::"CustomerSupport"').
+    action:
+      type: string
+      description: Action name being attempted (e.g., 'Action::"ExecuteOrder"').
+    resource:
+      type: string
+      description: Target resource identifier (e.g., 'Account::"12345"').
+    context:
+      type: object
+      description: Environmental context attributes for policy evaluation.
+  required:
+    - principal
+    - action
+    - resource

@@ -1,0 +1,22 @@
+name: bedrock-agent-deployer
+description: Deploys and configures an AI agent instance on Amazon Bedrock AgentCore serverless runtime.
+input_schema:
+  type: object
+  properties:
+    agent_name:
+      type: string
+      description: Unique name for the Bedrock agent deployment.
+    foundation_model:
+      type: string
+      description: Model ID to bind (e.g., 'anthropic.claude-3-5-sonnet-20241022-v2:0', 'amazon.nova-pro-v1:0').
+    framework:
+      type: string
+      description: Agent framework ('strands', 'crewai', 'langgraph', 'llamaindex').
+      default: "strands"
+    enable_code_interpreter:
+      type: boolean
+      description: Whether to enable sandboxed Python Code Interpreter tool.
+      default: true
+  required:
+    - agent_name
+    - foundation_model

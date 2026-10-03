@@ -1,8 +1,8 @@
 # EXPLAINABILITY.md
 
-This document explains the internal mechanisms, data lineage, operational boundaries, and governance framework of **# Explainability & Decision Transparency Report** (`agentcore-samples`) in accordance with the **OpenGAP v0.1.0** specification for the **HiDevs GitAgent Passport** clearance pipeline.
+This document explains the internal mechanisms, data lineage, operational boundaries, and governance framework of **AgentCore Samples** (`agentcore-samples`) in accordance with the **OpenGAP v0.1.0** specification for the **HiDevs GitAgent Passport** clearance pipeline.
 
-> **Agent Name:** # Explainability & Decision Transparency Report (`agentcore-samples`)  
+> **Agent Name:** AgentCore Samples (`agentcore-samples`)  
 > **Specification:** OpenGAP v0.1.0  
 > **Category / Domain:** Developer Tools / Enterprise AI Agent Runtime, Bedrock AgentCore & MCP Tool Gateway  
 > **Compliance Standard:** OpenGAP Checkpoint 2 (Explainability & Decision Governance), OWASP LLM Top 10, MITRE ATLAS  
@@ -11,7 +11,7 @@ This document explains the internal mechanisms, data lineage, operational bounda
 
 ## How the Agent Decides
 
-# Explainability & Decision Transparency Report operates via a deterministic five-stage operational pipeline.
+The agent executes enterprise agentic workflows through a deterministic, 5-stage orchestration pipeline on Amazon Bedrock AgentCore.
 
 ### 1. Decision Architecture
 
@@ -52,7 +52,6 @@ The runtime intake, state classification, evaluation, and execution tracking ope
 
 ### 2. Decision Logic & Routing Formulations
 
-Scoring
 Model routing across Bedrock foundation models (Anthropic Claude 3.7/3.5, Amazon Nova Pro/Lite) utilizes a latency-cost optimization formulation:
 
 $$S_{\text{model}}(m) = w_1 \cdot \text{CapabilityMatch}(m, T) + w_2 \cdot \left(1 - \frac{\text{TTFT}(m)}{\text{MaxTTFT}}\right) - w_3 \cdot \text{NormalizedCost}(m)$$
@@ -70,29 +69,31 @@ Where $\mathbf{v}$ denotes vector embeddings, $\delta$ represents temporal memor
 
 ### 3. Thresholding & Refusal Decision Criteria
 
-# Explainability & Decision Transparency Report enforces strict operational boundaries and deterministic refusal thresholds:
-- **Refusal on ERR_CEDAR_POLICY_DENIAL**: **Cedar Policy Verdict** halts execution with code `ERR_CEDAR_POLICY_DENIAL`.
-- **Refusal on ERR_AUTH_EXPIRED_TOKEN**: **IAM Token Expiration** halts execution with code `ERR_AUTH_EXPIRED_TOKEN`.
-- **Refusal on ERR_SANDBOX_TIMEOUT**: **Code Interpreter Execution Timeout** halts execution with code `ERR_SANDBOX_TIMEOUT`.
-- **Refusal on ERR_BEDROCK_RATE_THROTTLED**: **Bedrock Quota Throttle** halts execution with code `ERR_BEDROCK_RATE_THROTTLED`.
-- **Refusal on ERR_MEMORY_PAYLOAD_EXCEEDED**: **Memory Payload Overflow** halts execution with code `ERR_MEMORY_PAYLOAD_EXCEEDED`.
+AgentCore Samples enforces strict operational boundaries and deterministic refusal thresholds:
+- **Refusal on ERR_CEDAR_POLICY_DENIAL**: Cedar Policy Verdict (`Deny` verdict) halts execution with code `ERR_CEDAR_POLICY_DENIAL`.
+- **Refusal on ERR_AUTH_EXPIRED_TOKEN**: IAM Token Expiration (Token TTL $\le 0$) halts execution with code `ERR_AUTH_EXPIRED_TOKEN`.
+- **Refusal on ERR_SANDBOX_TIMEOUT**: Code Interpreter Execution Timeout ($> 60$ seconds) halts execution with code `ERR_SANDBOX_TIMEOUT`.
+- **Refusal on ERR_BEDROCK_RATE_THROTTLED**: Bedrock Quota Throttle (HTTP 429 ThrottlingException) halts execution with code `ERR_BEDROCK_RATE_THROTTLED`.
+- **Refusal on ERR_MEMORY_PAYLOAD_EXCEEDED**: Memory Payload Overflow (Context $> 128$ KB per chunk) halts execution with code `ERR_MEMORY_PAYLOAD_EXCEEDED`.
 
 ### 4. Fallback Decision Mechanism
 
 Continuous operational stability is maintained through layered fault recovery:
+- **Tier 1 (Automated Bedrock CrossRegion Failover)**: If a specific AWS region experiences capacity constraints, the runtime reroutes inference to an alternate configured AWS region within 500ms.
+- **Tier 2 (Degraded Tool Fallback)**: If an external enterprise MCP gateway tool times out, the agent falls back to cached schema responses or alternative data pipelines.
 - **Model Fallback Cascade**: High-level reasoning and synthesis default to `gemini-2.0-flash` with automatic failover to `gpt-4o` and `claude-3-5-sonnet`.
 
 ### 5. Human-in-the-Loop Governance
 
 Human operators retain sovereign authority over the multi-agent execution lifecycle:
-- **Consequential Action Sign-Off**: Sensitive and consequential actions require operator sign-off.
-- **Offline Ledger Auditing**: Operators can verify execution records and state transitions offline.
+- **Tier 3 (Human Administrator Intervention)**: Critical infrastructure modifications (e.g. database schema migrations, IAM permission escalations) trigger an Amazon SNS notification awaiting explicit administrative approval.
+- **Benchmark Trajectory Auditing**: Operators inspect evaluation traces, raw generation tokens, and container logs to verify scoring fidelity.
 
 ---
 
 ## The Data It Uses
 
-# Explainability & Decision Transparency Report operates under strict principles of data minimization, environment isolation, and privacy protection.
+AgentCore Samples operates under strict principles of data minimization, environment isolation, and privacy protection.
 
 ### 1. Ingested Input Data
 
@@ -103,7 +104,9 @@ The framework processes only operational data necessary to perform its functions
 
 ### 2. Configuration & Reference Data
 
-- **Configuration Schemas**: Declarative system policy files.
+- **Amazon DynamoDB**: High-throughput key-value storage for session metadata and episodic memory.
+- **Amazon OpenSearch / Bedrock Knowledge Bases**: Vector search indices for enterprise document retrieval (RAG).
+- **AWS Secrets Manager**: Encrypted storage for external API tokens and database credentials.
 
 ### 3. Base Model & Inference Lineage
 
@@ -121,7 +124,7 @@ The framework processes only operational data necessary to perform its functions
 
 ## Limitations
 
-Understanding the operational boundaries and technical constraints of # Explainability & Decision Transparency Report is essential for effective deployment.
+Understanding the operational boundaries and technical constraints of AgentCore Samples is essential for effective deployment.
 
 ### 1. Cold Start Latency in Containerized Serverless Runtimes
 - **Limitation**: Initializing complex Python environments with scientific libraries within Code Interpreter sandboxes can take 2-5 seconds on cold start.
